@@ -5,17 +5,19 @@ import { RegisterPage } from "./pages/RegisterPage";
 import { NewWordPage } from "./pages/NewWordPage";
 import { PracticePage } from "./pages/PracticePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
+import { DashboardPage } from "./pages/DashboardPage";
 
 export const App = () => {
   return (
     <Routes>
-      <Route element={<Layout />}></Route>
-      <Route path="/" element={<Layout />}></Route>
-      <Route path="/login" element={<LoginPage />}></Route>
-      <Route path="/register" element={<RegisterPage />}></Route>
-      <Route path="/words/new" element={<NewWordPage />}></Route>
-      <Route path="/practice" element={<PracticePage />}></Route>
-      <Route path="*" element={<NotFoundPage />}></Route>
+      <Route element={<Layout />}>
+        <Route index element={<DashboardPage />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} />
+        <Route path="words/new" element={<NewWordPage />} />
+        <Route path="practice" element={<PracticePage />} />
+        <Route path="*" element={<NotFoundPage />} />
+      </Route>
     </Routes>
   );
 };
