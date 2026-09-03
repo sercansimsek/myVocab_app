@@ -12,4 +12,10 @@ export const registerSchema = z
     path: ["confirmPassword"],
   });
 
+export const loginSchema = z.object({
+  email: z.email().trim().toLowerCase(),
+  password: z.string().min(1).max(72),
+});
+
+export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
