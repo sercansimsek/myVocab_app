@@ -5,10 +5,12 @@ import {
   loginUser,
   getCurrentUser,
   refreshLoginSession,
+  logoutUser,
 } from "../services/auth-service.js";
 import { AppError } from "../utils/app-error.js";
 import {
   REFRESH_TOKEN_COOKIE_NAME,
+  refreshTokenClearCookieOptions,
   refreshTokenCookieOptions,
 } from "../config/auth.js";
 
@@ -113,4 +115,19 @@ export const refresh: RequestHandler = async (request, response) => {
       accessToken,
     },
   });
+};
+
+export const logout: RequestHandler = async (request, response) => {
+  const refreshToken = request.cookies?.[REFRESH_TOKEN_COOKIE_NAME];
+
+  if (typeof refreshToken === "string") {
+    await logoutUser(refreshToken);
+  }
+
+  response.clearCookie(
+    REFRESH_TOKEN_COOKIE_NAME,
+    refreshTokenClearCookieOptions,
+  );
+
+  response.status(204).send();
 };

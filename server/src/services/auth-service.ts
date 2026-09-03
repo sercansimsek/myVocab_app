@@ -182,3 +182,17 @@ export const refreshLoginSession = async (refreshToken: string) => {
     refreshToken: newRefreshToken,
   };
 };
+
+export const logoutUser = async (refreshToken: string): Promise<void> => {
+  const tokenHash = hashRefreshToken(refreshToken);
+
+  await prisma.refreshSession.updateMany({
+    where: {
+      tokenHash,
+      revokedAt: null,
+    },
+    data: {
+      revokedAt: new Date(),
+    },
+  });
+};
