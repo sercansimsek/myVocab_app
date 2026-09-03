@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import { prisma } from "../config/database.js";
+
 import type { RegisterInput, LoginInput } from "../schemas/auth-schema.js";
 import { AppError } from "../utils/app-error.js";
 import { createAccessToken } from "../utils/jwt.js";
@@ -116,4 +117,68 @@ export const getCurrentUser = async (userId: string) => {
   }
 
   return user;
+};
+
+export const refreshLoginSession = async (refreshToken: string) => {
+  const tokenHash = hashRefreshToken(refreshToken);
+
+  const session = await prisma.refreshSession.findUnique({
+    where: {
+      tokenHash,
+    },
+    select: {
+      id: true,
+      userId: true,
+      expiresAt: true,
+      revokedAt: true,
+    },
+  });
+
+  if (!session || session.revokedAt || session.expiresAt <= new Date()) {
+    throw new AppError(
+      401,
+      "INVALID_REFRESH_TOKEN",
+      "Refresh token is invalid or expired",
+    );
+  }
+
+  const newRefreshToken = createRefreshToken();
+  const newTokenHash = hashRefreshToken(newRefreshToken);
+  const newExpiresAt = createRefreshTokenExpiration();
+
+  await prisma.$transaction(async (transaction) => {
+    const updateResult = await transaction.refreshSession.updateMany({
+      where: {
+        id: session.id,
+        revokedAt: null,
+      },
+      data: {
+        revokedAt: new Date(),
+      },
+    });
+
+    // Protects against two requests trying to reuse the same token.
+    if (updateResult.count !== 1) {
+      throw new AppError(
+        401,
+        "INVALID_REFRESH_TOKEN",
+        "Refresh token is invalid or expired",
+      );
+    }
+
+    await transaction.refreshSession.create({
+      data: {
+        tokenHash: newTokenHash,
+        userId: session.userId,
+        expiresAt: newExpiresAt,
+      },
+    });
+  });
+
+  const accessToken = await createAccessToken(session.userId);
+
+  return {
+    accessToken,
+    refreshToken: newRefreshToken,
+  };
 };

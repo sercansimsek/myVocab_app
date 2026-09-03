@@ -4,6 +4,7 @@ import {
   registerUser,
   loginUser,
   getCurrentUser,
+  refreshLoginSession,
 } from "../services/auth-service.js";
 import { AppError } from "../utils/app-error.js";
 import {
@@ -83,6 +84,33 @@ export const me: RequestHandler = async (request, response) => {
   response.status(200).json({
     data: {
       user,
+    },
+  });
+};
+
+export const refresh: RequestHandler = async (request, response) => {
+  const refreshToken = request.cookies?.[REFRESH_TOKEN_COOKIE_NAME];
+
+  if (typeof refreshToken !== "string") {
+    throw new AppError(
+      401,
+      "REFRESH_TOKEN_REQUIRED",
+      "Refresh token is required",
+    );
+  }
+
+  const { accessToken, refreshToken: newRefreshToken } =
+    await refreshLoginSession(refreshToken);
+
+  response.cookie(
+    REFRESH_TOKEN_COOKIE_NAME,
+    newRefreshToken,
+    refreshTokenCookieOptions,
+  );
+
+  response.status(200).json({
+    data: {
+      accessToken,
     },
   });
 };
