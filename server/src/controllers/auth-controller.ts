@@ -47,11 +47,9 @@ export const login: RequestHandler = async (request, response) => {
     return;
   }
 
-  const user = await loginUser(result.data);
+  const authResult = await loginUser(result.data);
 
   response.status(200).json({
-    data: {
-      user,
-    },
+    data: authResult,
   });
 };

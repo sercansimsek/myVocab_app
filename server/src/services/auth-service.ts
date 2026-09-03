@@ -2,6 +2,7 @@ import bcrypt from "bcrypt";
 import { prisma } from "../config/database.js";
 import type { RegisterInput, LoginInput } from "../schemas/auth-schema.js";
 import { AppError } from "../utils/app-error.js";
+import { createAccessToken } from "../utils/jwt.js";
 
 export const registerUser = async (input: RegisterInput) => {
   const existingUser = await prisma.user.findUnique({
@@ -63,10 +64,15 @@ export const loginUser = async (input: LoginInput) => {
     );
   }
 
+  const accessToken = await createAccessToken(user.id);
+
   return {
-    id: user.id,
-    name: user.name,
-    email: user.email,
-    createdAt: user.createdAt,
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      createdAt: user.createdAt,
+    },
+    accessToken,
   };
 };
