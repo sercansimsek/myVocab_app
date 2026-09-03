@@ -6,6 +6,7 @@ import { NewWordPage } from "./pages/NewWordPage";
 import { PracticePage } from "./pages/PracticePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { DashboardPage } from "./pages/DashboardPage";
+import { ProtectedRoute } from "./auth/ProtectedRoute";
 
 export const App = () => {
   return (
@@ -14,8 +15,12 @@ export const App = () => {
         <Route index element={<DashboardPage />} />
         <Route path="login" element={<LoginPage />} />
         <Route path="register" element={<RegisterPage />} />
-        <Route path="words/new" element={<NewWordPage />} />
-        <Route path="practice" element={<PracticePage />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route path="words/new" element={<NewWordPage />} />
+          <Route path="practice" element={<PracticePage />} />
+        </Route>
+
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>
