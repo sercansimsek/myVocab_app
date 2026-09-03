@@ -1,5 +1,8 @@
 import cors from "cors";
 import express from "express";
+
+import { authRouter } from "./routes/auth-routes.js";
+
 import { notFoundHandler } from "./middleware/not-found-handler.js";
 import { errorHandler } from "./middleware/error-handler.js";
 
@@ -14,6 +17,8 @@ app.get("/api/health", (_request, response) => {
     message: "myVocab API is running",
   });
 });
+
+app.use("/api/auth", authRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
