@@ -1,6 +1,11 @@
 import type { RequestHandler } from "express";
 import { registerSchema, loginSchema } from "../schemas/auth-schema.js";
-import { registerUser, loginUser } from "../services/auth-service.js";
+import {
+  registerUser,
+  loginUser,
+  getCurrentUser,
+} from "../services/auth-service.js";
+import { AppError } from "../utils/app-error.js";
 
 export const register: RequestHandler = async (request, response) => {
   const result = registerSchema.safeParse(request.body);
@@ -51,5 +56,23 @@ export const login: RequestHandler = async (request, response) => {
 
   response.status(200).json({
     data: authResult,
+  });
+};
+
+export const me: RequestHandler = async (request, response) => {
+  if (!request.userId) {
+    throw new AppError(
+      401,
+      "AUTHENTICATION_REQUIRED",
+      "Authentication is required",
+    );
+  }
+
+  const user = await getCurrentUser(request.userId);
+
+  response.status(200).json({
+    data: {
+      user,
+    },
   });
 };

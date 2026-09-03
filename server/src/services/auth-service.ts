@@ -76,3 +76,27 @@ export const loginUser = async (input: LoginInput) => {
     accessToken,
   };
 };
+
+export const getCurrentUser = async (userId: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      createdAt: true,
+    },
+  });
+
+  if (!user) {
+    throw new AppError(
+      401,
+      "INVALID_ACCESS_TOKEN",
+      "Access token is invalid or expired",
+    );
+  }
+
+  return user;
+};
