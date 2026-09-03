@@ -12,6 +12,7 @@ if (!jwtAccessSecret || jwtAccessSecret.length < 32) {
 }
 
 const nodeEnv = process.env.NODE_ENV ?? "development";
+const clientOrigin = process.env.CLIENT_ORIGIN ?? "http://localhost:5173";
 
 if (!["development", "test", "production"].includes(nodeEnv)) {
   throw new Error("NODE_ENV is invalid");
@@ -21,4 +22,5 @@ export const env = {
   databaseUrl,
   jwtAccessSecret,
   nodeEnv,
+  clientOrigin,
 };
