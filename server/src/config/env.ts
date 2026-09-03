@@ -11,7 +11,14 @@ if (!jwtAccessSecret || jwtAccessSecret.length < 32) {
   throw new Error("JWT_ACCESS_SECRET must contain at least 32 characters");
 }
 
+const nodeEnv = process.env.NODE_ENV ?? "development";
+
+if (!["development", "test", "production"].includes(nodeEnv)) {
+  throw new Error("NODE_ENV is invalid");
+}
+
 export const env = {
   databaseUrl,
   jwtAccessSecret,
+  nodeEnv,
 };

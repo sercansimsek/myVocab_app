@@ -6,6 +6,10 @@ import {
   getCurrentUser,
 } from "../services/auth-service.js";
 import { AppError } from "../utils/app-error.js";
+import {
+  REFRESH_TOKEN_COOKIE_NAME,
+  refreshTokenCookieOptions,
+} from "../config/auth.js";
 
 export const register: RequestHandler = async (request, response) => {
   const result = registerSchema.safeParse(request.body);
@@ -52,7 +56,13 @@ export const login: RequestHandler = async (request, response) => {
     return;
   }
 
-  const authResult = await loginUser(result.data);
+  const { refreshToken, ...authResult } = await loginUser(result.data);
+
+  response.cookie(
+    REFRESH_TOKEN_COOKIE_NAME,
+    refreshToken,
+    refreshTokenCookieOptions,
+  );
 
   response.status(200).json({
     data: authResult,
