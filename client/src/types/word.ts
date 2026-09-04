@@ -14,3 +14,10 @@ export interface CreateWordInput {
   slovak: string;
   notes?: string;
 }
+
+export interface UpdateWordInput {
+  english?: string;
+  turkish?: string;
+  slovak?: string;
+  notes?: string | null;
+}
