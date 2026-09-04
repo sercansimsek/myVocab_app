@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "../api/api-error";
-import { listWordsRequest } from "../api/word-api";
+import { deleteWordRequest, listWordsRequest } from "../api/word-api";
 import { useAuth } from "../auth/use-auth";
 import type { Word } from "../types/word";
 
@@ -9,6 +9,8 @@ const WordList = () => {
   const [words, setWords] = useState<Word[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+  const [deletingWordId, setDeletingWordId] = useState<string | null>(null);
+  const [deleteErrorMessage, setDeleteErrorMessage] = useState("");
 
   useEffect(() => {
     const controller = new AbortController();
@@ -40,6 +42,31 @@ const WordList = () => {
     };
   }, []);
 
+  const handleDelete = async (word: Word) => {
+    const confirmed = window.confirm(
+      `Delete "${word.english}"? This action cannot be undone.`,
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    setDeleteErrorMessage("");
+    setDeletingWordId(word.id);
+
+    try {
+      await deleteWordRequest(word.id);
+
+      setWords((currentWords) =>
+        currentWords.filter((currentWord) => currentWord.id !== word.id),
+      );
+    } catch (error) {
+      setDeleteErrorMessage(getApiErrorMessage(error, "Unable to delete word"));
+    } finally {
+      setDeletingWordId(null);
+    }
+  };
+
   if (isLoading) {
     return <p>Loading your vocabulary...</p>;
   }
@@ -63,6 +90,8 @@ const WordList = () => {
         {words.length} {words.length === 1 ? "word" : "words"}
       </p>
 
+      {deleteErrorMessage && <p role="alert">{deleteErrorMessage}</p>}
+
       <ul>
         {words.map((word) => (
           <li key={word.id}>
@@ -70,7 +99,18 @@ const WordList = () => {
             <div>Turkish: {word.turkish}</div>
             <div>Slovak: {word.slovak}</div>
             {word.notes && <div>Notes: {word.notes}</div>}
-            <Link to={`/words/${encodeURIComponent(word.id)}/edit`}>Edit</Link>
+            <div>
+              <Link to={`/words/${encodeURIComponent(word.id)}/edit`}>
+                Edit
+              </Link>{" "}
+              <button
+                type="button"
+                onClick={() => void handleDelete(word)}
+                disabled={deletingWordId !== null}
+              >
+                {deletingWordId === word.id ? "Deleting..." : "Delete"}
+              </button>
+            </div>
           </li>
         ))}
       </ul>
