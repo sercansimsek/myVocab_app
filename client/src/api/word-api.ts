@@ -12,3 +12,16 @@ export const createWordRequest = async (
 
   return response.data.data.word;
 };
+
+export const listWordsRequest = async (
+  signal?: AbortSignal,
+): Promise<Word[]> => {
+  const response = await apiClient.get<ApiResponse<{ words: Word[] }>>(
+    "/words",
+    {
+      signal,
+    },
+  );
+
+  return response.data.data.words;
+};
