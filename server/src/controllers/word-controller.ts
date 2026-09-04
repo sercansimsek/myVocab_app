@@ -9,6 +9,7 @@ import {
   listWords,
   getWordById,
   updateWord,
+  deleteWord,
 } from "../services/word-service.js";
 import { AppError } from "../utils/app-error.js";
 
@@ -136,4 +137,28 @@ export const update: RequestHandler = async (request, response) => {
       word,
     },
   });
+};
+
+export const remove: RequestHandler = async (request, response) => {
+  const idResult = wordIdSchema.safeParse(request.params.id);
+
+  if (!idResult.success) {
+    throw new AppError(400, "INVALID_WORD_ID", "Word ID must be a valid UUID");
+  }
+
+  if (!request.userId) {
+    throw new AppError(
+      401,
+      "AUTHENTICATION_REQUIRED",
+      "Authentication is required",
+    );
+  }
+
+  const wasDeleted = await deleteWord(request.userId, idResult.data);
+
+  if (!wasDeleted) {
+    throw new AppError(404, "WORD_NOT_FOUND", "Word was not found");
+  }
+
+  response.status(204).send();
 };

@@ -87,3 +87,17 @@ export const updateWord = async (
 
   return getWordById(userId, wordId);
 };
+
+export const deleteWord = async (
+  userId: string,
+  wordId: string,
+): Promise<boolean> => {
+  const deleteResult = await prisma.word.deleteMany({
+    where: {
+      id: wordId,
+      userId,
+    },
+  });
+
+  return deleteResult.count === 1;
+};
