@@ -279,6 +279,10 @@ export const DashboardPage = () => {
       <h1>Hello, {user.name}!</h1>
       <p>Signed in as {user.email}</p>
 
+      <p>
+        <Link to="/practice">Start practice</Link>
+      </p>
+
       <h2>Your vocabulary</h2>
       <WordList />
 
