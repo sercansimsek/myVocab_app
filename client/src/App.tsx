@@ -7,6 +7,7 @@ import { PracticePage } from "./pages/PracticePage";
 import { NotFoundPage } from "./pages/NotFoundPage";
 import { DashboardPage } from "./pages/DashboardPage";
 import { ProtectedRoute } from "./auth/ProtectedRoute";
+import { EditWordPage } from "./pages/EditWordPage";
 
 export const App = () => {
   return (
@@ -19,6 +20,7 @@ export const App = () => {
         <Route element={<ProtectedRoute />}>
           <Route path="words/new" element={<NewWordPage />} />
           <Route path="practice" element={<PracticePage />} />
+          <Route path="words/:wordId/edit" element={<EditWordPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />

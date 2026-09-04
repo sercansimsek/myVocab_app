@@ -70,6 +70,7 @@ const WordList = () => {
             <div>Turkish: {word.turkish}</div>
             <div>Slovak: {word.slovak}</div>
             {word.notes && <div>Notes: {word.notes}</div>}
+            <Link to={`/words/${encodeURIComponent(word.id)}/edit`}>Edit</Link>
           </li>
         ))}
       </ul>
