@@ -41,3 +41,21 @@ export const listWords = async (userId: string) => {
     },
   });
 };
+
+export const getWordById = async (userId: string, wordId: string) => {
+  return prisma.word.findFirst({
+    where: {
+      id: wordId,
+      userId,
+    },
+    select: {
+      id: true,
+      english: true,
+      turkish: true,
+      slovak: true,
+      notes: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+};

@@ -1,5 +1,5 @@
 import { z } from "zod";
-
+export const wordIdSchema = z.uuid();
 export const createWordSchema = z.object({
   english: z.string().trim().min(1).max(255),
   turkish: z.string().trim().min(1).max(255),
