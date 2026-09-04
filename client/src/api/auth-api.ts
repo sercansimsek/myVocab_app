@@ -1,4 +1,4 @@
-import { apiClient } from "./api-client";
+import { apiClient, refreshAccessToken } from "./api-client";
 import type {
   AccessTokenResult,
   ApiResponse,
@@ -26,19 +26,10 @@ export const registerRequest = async (input: RegisterInput): Promise<User> => {
   return response.data.data.user;
 };
 
-let refreshPromise: Promise<AccessTokenResult> | null = null;
+export const refreshRequest = async (): Promise<AccessTokenResult> => {
+  const accessToken = await refreshAccessToken();
 
-export const refreshRequest = (): Promise<AccessTokenResult> => {
-  if (!refreshPromise) {
-    refreshPromise = apiClient
-      .post<ApiResponse<AccessTokenResult>>("/auth/refresh")
-      .then((response) => response.data.data)
-      .finally(() => {
-        refreshPromise = null;
-      });
-  }
-
-  return refreshPromise;
+  return { accessToken };
 };
 
 export const getCurrentUserRequest = async (): Promise<User> => {

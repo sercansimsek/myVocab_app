@@ -12,7 +12,10 @@ import {
   refreshRequest,
   registerRequest,
 } from "../api/auth-api";
-import { setAccessToken } from "../api/api-client";
+import {
+  setAccessToken,
+  setAuthenticationFailureHandler,
+} from "../api/api-client";
 import type { LoginInput, RegisterInput, User } from "../types/auth";
 import { AuthContext, type AuthContextValue } from "./auth-context";
 
@@ -23,6 +26,19 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const handleAuthenticationFailure = (): void => {
+      setAccessToken(null);
+      setUser(null);
+    };
+
+    setAuthenticationFailureHandler(handleAuthenticationFailure);
+
+    return () => {
+      setAuthenticationFailureHandler(null);
+    };
+  }, []);
 
   useEffect(() => {
     let isActive = true;
