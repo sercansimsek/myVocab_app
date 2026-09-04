@@ -1,5 +1,20 @@
 import { z } from "zod";
+
 export const wordIdSchema = z.uuid();
+
+export const listWordsQuerySchema = z.object({
+  search: z
+    .string()
+    .trim()
+    .max(255)
+    .optional()
+    .transform((value) => value || undefined),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(100).default(10),
+});
+
+export type ListWordsQueryInput = z.infer<typeof listWordsQuerySchema>;
+
 export const createWordSchema = z.object({
   english: z.string().trim().min(1).max(255),
   turkish: z.string().trim().min(1).max(255),

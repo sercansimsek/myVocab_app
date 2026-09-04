@@ -3,6 +3,7 @@ import {
   createWordSchema,
   wordIdSchema,
   updateWordSchema,
+  listWordsQuerySchema,
 } from "../schemas/word-schema.js";
 import {
   createWord,
@@ -49,6 +50,23 @@ export const create: RequestHandler = async (request, response) => {
 };
 
 export const list: RequestHandler = async (request, response) => {
+  const queryResult = listWordsQuerySchema.safeParse(request.query);
+
+  if (!queryResult.success) {
+    response.status(400).json({
+      error: {
+        code: "VALIDATION_ERROR",
+        message: "Invalid word list query",
+        details: queryResult.error.issues.map((issue) => ({
+          field: issue.path.join("."),
+          message: issue.message,
+        })),
+      },
+    });
+
+    return;
+  }
+
   if (!request.userId) {
     throw new AppError(
       401,
@@ -57,12 +75,10 @@ export const list: RequestHandler = async (request, response) => {
     );
   }
 
-  const words = await listWords(request.userId);
+  const result = await listWords(request.userId, queryResult.data);
 
   response.status(200).json({
-    data: {
-      words,
-    },
+    data: result,
   });
 };
 
