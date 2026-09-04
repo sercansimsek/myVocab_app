@@ -21,3 +21,23 @@ export const createWord = async (userId: string, input: CreateWordInput) => {
     },
   });
 };
+
+export const listWords = async (userId: string) => {
+  return prisma.word.findMany({
+    where: {
+      userId,
+    },
+    orderBy: {
+      createdAt: "desc",
+    },
+    select: {
+      id: true,
+      english: true,
+      turkish: true,
+      slovak: true,
+      notes: true,
+      createdAt: true,
+      updatedAt: true,
+    },
+  });
+};

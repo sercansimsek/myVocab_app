@@ -1,6 +1,6 @@
 import type { RequestHandler } from "express";
 import { createWordSchema } from "../schemas/word-schema.js";
-import { createWord } from "../services/word-service.js";
+import { createWord, listWords } from "../services/word-service.js";
 import { AppError } from "../utils/app-error.js";
 
 export const create: RequestHandler = async (request, response) => {
@@ -34,6 +34,24 @@ export const create: RequestHandler = async (request, response) => {
   response.status(201).json({
     data: {
       word,
+    },
+  });
+};
+
+export const list: RequestHandler = async (request, response) => {
+  if (!request.userId) {
+    throw new AppError(
+      401,
+      "AUTHENTICATION_REQUIRED",
+      "Authentication is required",
+    );
+  }
+
+  const words = await listWords(request.userId);
+
+  response.status(200).json({
+    data: {
+      words,
     },
   });
 };
