@@ -3,6 +3,7 @@ import express from "express";
 import cookieParser from "cookie-parser";
 
 import { authRouter } from "./routes/auth-routes.js";
+import { wordRouter } from "./routes/word-routes.js";
 import { env } from "./config/env.js";
 
 import { notFoundHandler } from "./middleware/not-found-handler.js";
@@ -27,6 +28,7 @@ app.get("/api/health", (_request, response) => {
 });
 
 app.use("/api/auth", authRouter);
+app.use("/api/words", wordRouter);
 
 app.use(notFoundHandler);
 app.use(errorHandler);
