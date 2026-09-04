@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { type FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "../api/api-error";
 import { useAuth } from "../auth/use-auth";
@@ -32,31 +32,33 @@ export const LoginPage = () => {
   };
 
   return (
-    <section>
+    <section className="auth-card">
       <h1>Welcome Back</h1>
-      <p>Log in to continue your learning.</p>
+      <p className="page-intro">Log in to continue your learning.</p>
 
-      <form onSubmit={handleSubmit}>
-        <div>
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <div className="form-field">
           <label htmlFor="email">Email</label>
           <input
             id="email"
             name="email"
             type="email"
             autoComplete="email"
+            placeholder="you@example.com"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
           />
         </div>
 
-        <div>
+        <div className="form-field">
           <label htmlFor="password">Password</label>
           <input
             id="password"
             name="password"
             type="password"
             autoComplete="current-password"
+            placeholder="Enter your password"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             required
@@ -65,12 +67,12 @@ export const LoginPage = () => {
 
         {errorMessage && <p role="alert">{errorMessage}</p>}
 
-        <button type="submit" disabled={isSubmitting}>
+        <button className="auth-submit" type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Logging in..." : "Login"}
         </button>
       </form>
 
-      <p>
+      <p className="auth-footer">
         Don&apos;t have an account? <Link to="/register">Register</Link>
       </p>
     </section>

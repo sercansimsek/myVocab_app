@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { type FormEvent, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { getApiErrorMessage } from "../api/api-error";
 import { useAuth } from "../auth/use-auth";
@@ -42,18 +42,19 @@ export const RegisterPage = () => {
   };
 
   return (
-    <section>
+    <section className="auth-card">
       <h1>Create Account</h1>
-      <p>Start your vocabulary journey.</p>
+      <p className="page-intro">Start your vocabulary journey.</p>
 
-      <form onSubmit={handleSubmit}>
-        <div>
+      <form className="auth-form" onSubmit={handleSubmit}>
+        <div className="form-field">
           <label htmlFor="name">Name</label>
           <input
             id="name"
             name="name"
             type="text"
             autoComplete="name"
+            placeholder="Your name"
             value={name}
             onChange={(event) => setName(event.target.value)}
             minLength={2}
@@ -62,41 +63,48 @@ export const RegisterPage = () => {
           />
         </div>
 
-        <div>
+        <div className="form-field">
           <label htmlFor="email">Email</label>
           <input
             id="email"
             name="email"
             type="email"
             autoComplete="email"
+            placeholder="you@example.com"
             value={email}
             onChange={(event) => setEmail(event.target.value)}
             required
           />
         </div>
 
-        <div>
+        <div className="form-field">
           <label htmlFor="password">Password</label>
           <input
             id="password"
             name="password"
             type="password"
             autoComplete="new-password"
+            placeholder="Create a password"
+            aria-describedby="password-requirements"
             value={password}
             onChange={(event) => setPassword(event.target.value)}
             minLength={8}
             maxLength={72}
             required
           />
+          <small id="password-requirements" className="field-hint">
+            Use between 8 and 72 characters.
+          </small>
         </div>
 
-        <div>
+        <div className="form-field">
           <label htmlFor="confirmPassword">Confirm password</label>
           <input
             id="confirmPassword"
             name="confirmPassword"
             type="password"
             autoComplete="new-password"
+            placeholder="Repeat your password"
             value={confirmPassword}
             onChange={(event) => setConfirmPassword(event.target.value)}
             minLength={8}
@@ -107,12 +115,12 @@ export const RegisterPage = () => {
 
         {errorMessage && <p role="alert">{errorMessage}</p>}
 
-        <button type="submit" disabled={isSubmitting}>
+        <button className="auth-submit" type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Creating account..." : "Register"}
         </button>
       </form>
 
-      <p>
+      <p className="auth-footer">
         Already have an account? <Link to="/login">Login</Link>
       </p>
     </section>

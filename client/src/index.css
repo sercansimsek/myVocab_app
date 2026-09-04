@@ -241,6 +241,48 @@ nav {
   outline-offset: 2px;
 }
 
+.app-main > .auth-card {
+  width: min(100%, 30rem);
+}
+
+.auth-card h1 {
+  margin-bottom: 0.5rem;
+  text-align: center;
+}
+
+.page-intro {
+  margin-top: 0;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.auth-form {
+  margin-top: 1.75rem;
+}
+
+.form-field {
+  display: grid;
+  gap: 0.4rem;
+}
+
+.field-hint {
+  color: var(--color-muted);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.auth-submit {
+  width: 100%;
+  margin-top: 0.25rem;
+  font-weight: 700;
+}
+
+.auth-footer {
+  margin: 1.5rem 0 0;
+  color: var(--color-muted);
+  text-align: center;
+}
+
 @media (max-width: 40rem) {
   .app-container {
     width: min(100% - 1rem, 70rem);
