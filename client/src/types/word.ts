@@ -21,3 +21,21 @@ export interface UpdateWordInput {
   slovak?: string;
   notes?: string | null;
 }
+
+export interface Pagination {
+  page: number;
+  limit: number;
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface WordListResult {
+  words: Word[];
+  pagination: Pagination;
+}
+
+export interface ListWordsParams {
+  search?: string;
+  page?: number;
+  limit?: number;
+}

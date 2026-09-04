@@ -1,7 +1,12 @@
 import { apiClient } from "./api-client";
 import type { ApiResponse } from "../types/auth";
-import type { CreateWordInput, UpdateWordInput, Word } from "../types/word";
-
+import type {
+  CreateWordInput,
+  ListWordsParams,
+  UpdateWordInput,
+  Word,
+  WordListResult,
+} from "../types/word";
 export const createWordRequest = async (
   input: CreateWordInput,
 ): Promise<Word> => {
@@ -14,18 +19,16 @@ export const createWordRequest = async (
 };
 
 export const listWordsRequest = async (
+  params: ListWordsParams = {},
   signal?: AbortSignal,
-): Promise<Word[]> => {
-  const response = await apiClient.get<ApiResponse<{ words: Word[] }>>(
-    "/words",
-    {
-      signal,
-    },
-  );
+): Promise<WordListResult> => {
+  const response = await apiClient.get<ApiResponse<WordListResult>>("/words", {
+    params,
+    signal,
+  });
 
-  return response.data.data.words;
+  return response.data.data;
 };
-
 export const getWordRequest = async (
   wordId: string,
   signal?: AbortSignal,
