@@ -1,5 +1,8 @@
 import { prisma } from "../config/database.js";
-import type { CreateWordInput } from "../schemas/word-schema.js";
+import type {
+  CreateWordInput,
+  UpdateWordInput,
+} from "../schemas/word-schema.js";
 
 export const createWord = async (userId: string, input: CreateWordInput) => {
   return prisma.word.create({
@@ -58,4 +61,29 @@ export const getWordById = async (userId: string, wordId: string) => {
       updatedAt: true,
     },
   });
+};
+
+export const updateWord = async (
+  userId: string,
+  wordId: string,
+  input: UpdateWordInput,
+) => {
+  const updateResult = await prisma.word.updateMany({
+    where: {
+      id: wordId,
+      userId,
+    },
+    data: {
+      english: input.english,
+      turkish: input.turkish,
+      slovak: input.slovak,
+      notes: input.notes,
+    },
+  });
+
+  if (updateResult.count === 0) {
+    return null;
+  }
+
+  return getWordById(userId, wordId);
 };
